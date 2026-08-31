@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { Track } from '@shared/types';
+import { romajaService } from '../../shared/romaja';
 import './VideoPanel.css';
 
 interface VideoPanelProps {
@@ -8,6 +9,7 @@ interface VideoPanelProps {
   currentTime: number;
   isOpen: boolean;
   onClose: () => void;
+  onOpenInfoModal?: (track: Track) => void;
 }
 
 export const VideoPanel: React.FC<VideoPanelProps> = ({
@@ -16,15 +18,18 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
   currentTime,
   isOpen,
   onClose,
+  onOpenInfoModal,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const activeLineRef = useRef<HTMLParagraphElement | null>(null);
+  const [lyricsMode, setLyricsMode] = useState<'original' | 'phonetic' | 'spanish'>('phonetic');
 
   const isVideoTrack = Boolean(
     track &&
       (track.isVideo || track.fileName.toLowerCase().endsWith('.mp4'))
   );
 
-  // Keep video synchronized with audio currentTime & play/pause state
+  // Synchronize video element with currentTime & isPlaying
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !isVideoTrack) return;
@@ -44,24 +49,61 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
     }
   }, [currentTime, isPlaying, isVideoTrack]);
 
-  if (!isOpen) {
-    return null;
-  }
+  // Auto-scroll active lyric line into view
+  useEffect(() => {
+    if (activeLineRef.current) {
+      activeLineRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [currentTime]);
+
+  if (!isOpen) return null;
+
+  const rawLyrics = track?.lyrics || [
+    { timeSeconds: 0, text: '🎵 Escuchando pista en SonicVault...' },
+    { timeSeconds: 5, text: 'Disfruta de la música en alta calidad' },
+  ];
+
+  const processedLyrics = rawLyrics.map((line) => {
+    let display = line.text;
+    if (lyricsMode === 'phonetic') {
+      display = romajaService.romanize(line.text);
+    } else if (lyricsMode === 'spanish') {
+      display = line.spanishTranslation || romajaService.romanize(line.text);
+    }
+    return { ...line, displayText: display };
+  });
+
+  const activeIndex = processedLyrics.reduce((acc, line, idx) => {
+    if (currentTime >= line.timeSeconds) return idx;
+    return acc;
+  }, 0);
 
   return (
-    <aside className="video-panel" aria-label="Panel de Video y Detalle">
+    <aside className="video-panel" aria-label="Panel de Video y Lírica">
       <div className="video-panel__header">
         <h3 className="video-panel__title">
-          {isVideoTrack ? '🎬 Reproductor de Video' : '🎵 En Reproducción'}
+          {isVideoTrack ? '🎬 Reproductor de Video (50%)' : '🎵 En Reproducción'}
         </h3>
-        <button
-          type="button"
-          className="video-panel__close-btn"
-          onClick={onClose}
-          aria-label="Cerrar panel lateral"
-        >
-          ✕
-        </button>
+        <div className="video-panel__header-actions">
+          {track && onOpenInfoModal && (
+            <button
+              type="button"
+              className="video-panel__info-btn"
+              title="Información Trello"
+              onClick={() => onOpenInfoModal(track)}
+            >
+              ℹ️ Info
+            </button>
+          )}
+          <button
+            type="button"
+            className="video-panel__close-btn"
+            onClick={onClose}
+            aria-label="Cerrar panel lateral"
+          >
+            ✕
+          </button>
+        </div>
       </div>
 
       <div className="video-panel__content">
@@ -73,7 +115,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
                   ref={videoRef}
                   className="video-panel__video-element"
                   src={track.streamUrl}
-                  muted // Audio comes from main audio engine
+                  muted
                   playsInline
                 />
               ) : (
@@ -94,12 +136,51 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({
                 {track.title}
               </h4>
               <p className="video-panel__track-artist">{track.artist}</p>
-              {track.album && (
-                <p className="video-panel__track-album">Álbum: {track.album}</p>
-              )}
-              <span className="video-panel__badge">
-                {isVideoTrack ? '📹 Archivo MP4 Video' : '🎧 Archivo MP3 Audio'}
-              </span>
+            </div>
+
+            {/* Integrated Karaoke & Lyrics Section */}
+            <div className="video-panel__lyrics-container">
+              <div className="lyrics-header">
+                <span className="lyrics-title">🎤 Karaoke Sincronizado</span>
+                <div className="lyrics-mode-toggle">
+                  <button
+                    type="button"
+                    className={`lyrics-mode-btn ${lyricsMode === 'original' ? 'lyrics-mode-btn--active' : ''}`}
+                    onClick={() => setLyricsMode('original')}
+                  >
+                    Original
+                  </button>
+                  <button
+                    type="button"
+                    className={`lyrics-mode-btn ${lyricsMode === 'phonetic' ? 'lyrics-mode-btn--active' : ''}`}
+                    onClick={() => setLyricsMode('phonetic')}
+                  >
+                    Romaja
+                  </button>
+                  <button
+                    type="button"
+                    className={`lyrics-mode-btn ${lyricsMode === 'spanish' ? 'lyrics-mode-btn--active' : ''}`}
+                    onClick={() => setLyricsMode('spanish')}
+                  >
+                    Español
+                  </button>
+                </div>
+              </div>
+
+              <div className="lyrics-body">
+                {processedLyrics.map((line, idx) => {
+                  const isActive = idx === activeIndex;
+                  return (
+                    <p
+                      key={idx}
+                      ref={isActive ? activeLineRef : null}
+                      className={`lyric-line ${isActive ? 'lyric-line--active' : ''}`}
+                    >
+                      {line.displayText}
+                    </p>
+                  );
+                })}
+              </div>
             </div>
           </>
         ) : (

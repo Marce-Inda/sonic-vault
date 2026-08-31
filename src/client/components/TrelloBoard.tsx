@@ -14,6 +14,7 @@ export interface TrelloBoardProps {
   onRemoveTrackFromPlaylist?: (playlistName: string, trackId: string) => void;
   onDeletePlaylist?: (name: string) => void;
   onCreatePlaylist?: (name: string, trackId?: string) => Promise<void> | void;
+  onOpenInfoModal?: (track: Track) => void;
 }
 
 export function TrelloBoard({
@@ -25,6 +26,7 @@ export function TrelloBoard({
   onRemoveTrackFromPlaylist,
   onDeletePlaylist,
   onCreatePlaylist,
+  onOpenInfoModal,
 }: TrelloBoardProps) {
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
   const [activeMenuTrackId, setActiveMenuTrackId] = useState<string | null>(null);
@@ -219,18 +221,33 @@ export function TrelloBoard({
                           </div>
                         </div>
 
-                        <button
-                          type="button"
-                          className="track-card__menu-btn"
-                          title="Opciones"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const menuKey = `${playlist.name}-${track.id}`;
-                            setActiveMenuTrackId(isMenuOpen ? null : menuKey);
-                          }}
-                        >
-                          ⋮
-                        </button>
+                        <div className="track-card__actions-group">
+                          {onOpenInfoModal && (
+                            <button
+                              type="button"
+                              className="track-card__info-btn"
+                              title="Información Trello"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenInfoModal(track);
+                              }}
+                            >
+                              ℹ️
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className="track-card__menu-btn"
+                            title="Opciones"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const menuKey = `${playlist.name}-${track.id}`;
+                              setActiveMenuTrackId(isMenuOpen ? null : menuKey);
+                            }}
+                          >
+                            ⋮
+                          </button>
+                        </div>
 
                         {isMenuOpen && (
                           <div

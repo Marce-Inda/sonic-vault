@@ -21,6 +21,7 @@ import DownloadBar from './components/DownloadBar';
 import VideoPanel from './components/VideoPanel';
 import KaraokeLyricsModal from './components/KaraokeLyricsModal';
 import AgentChatDrawer from './components/AgentChatDrawer';
+import TrackInfoTrelloModal from './components/TrackInfoTrelloModal';
 
 
 
@@ -55,6 +56,7 @@ function AppContent() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [infoModalTrack, setInfoModalTrack] = useState<Track | null>(null);
   const [viewMode, setViewMode] = useState<'trello' | 'table'>('table');
   const [isVideoPanelOpen, setIsVideoPanelOpen] = useState(true);
   const [isKaraokeOpen, setIsKaraokeOpen] = useState(false);
@@ -244,24 +246,6 @@ function AppContent() {
             />
 
             <div className="app__toolbar">
-              <div className="app__view-toggle" role="radiogroup" aria-label="Modo de vista">
-                <button
-                  type="button"
-                  className={`app__view-btn ${viewMode === 'trello' ? 'app__view-btn--active' : ''}`}
-                  onClick={() => setViewMode('trello')}
-                  title="Vista de Tablero Trello"
-                >
-                  📊 Tablero Trello
-                </button>
-                <button
-                  type="button"
-                  className={`app__view-btn ${viewMode === 'table' ? 'app__view-btn--active' : ''}`}
-                  onClick={() => setViewMode('table')}
-                  title="Vista de Lista Tabla"
-                >
-                  📋 Lista Tabla
-                </button>
-              </div>
               <SearchBar value={searchQuery} onChange={setSearchQuery} />
             </div>
 
@@ -269,7 +253,7 @@ function AppContent() {
               <p className="app__no-results" role="status">
                 No se encontraron pistas
               </p>
-            ) : viewMode === 'trello' ? (
+            ) : (
               <TrelloBoard
                 playlists={playlists}
                 currentTrackId={state.currentTrack?.id ?? null}
@@ -279,18 +263,7 @@ function AppContent() {
                 onRemoveTrackFromPlaylist={handleRemoveTrackFromPlaylist}
                 onDeletePlaylist={handleDeletePlaylist}
                 onCreatePlaylist={handleCreatePlaylist}
-              />
-            ) : (
-              <PlaylistView
-                tracks={visibleTracks}
-                currentTrackId={state.currentTrack?.id ?? null}
-                selectedPlaylist={selectedPlaylist}
-                availablePlaylists={playlists.map((p) => p.name)}
-                playlists={playlists}
-                onPlayTrack={handlePlayTrack}
-                onAddTrackToPlaylist={handleAddTrackToPlaylist}
-                onRemoveTrackFromPlaylist={handleRemoveTrackFromPlaylist}
-                onCreatePlaylist={handleCreatePlaylist}
+                onOpenInfoModal={(track) => setInfoModalTrack(track)}
               />
             )}
           </>
@@ -303,6 +276,14 @@ function AppContent() {
         currentTime={state.currentTime}
         isOpen={isVideoPanelOpen}
         onClose={() => setIsVideoPanelOpen(false)}
+        onOpenInfoModal={(track) => setInfoModalTrack(track)}
+      />
+
+      <TrackInfoTrelloModal
+        track={infoModalTrack}
+        isOpen={Boolean(infoModalTrack)}
+        onClose={() => setInfoModalTrack(null)}
+        onDownloadTrack={handleDownloadFromAgent}
       />
 
       <footer className="app__player" aria-label="Barra de reproducción">

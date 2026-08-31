@@ -238,6 +238,28 @@
 }
 
 /* Card Actions Menu */
+.track-card__actions-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.track-card__info-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: all 0.15s ease;
+}
+
+.track-card__info-btn:hover {
+  color: #00f0ff;
+  background-color: rgba(0, 240, 255, 0.15);
+}
+
 .track-card__menu-btn {
   background: transparent;
   border: none;
