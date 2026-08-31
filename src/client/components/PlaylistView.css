@@ -50,11 +50,12 @@
   opacity: 0.7;
 }
 
-
 .playlist-view__col--actions,
 .playlist-view__cell--actions {
   width: 50px;
   text-align: center;
+  overflow: visible !important;
+  position: relative;
 }
 
 .playlist-view__col--duration,
@@ -66,7 +67,12 @@
 
 .playlist-view__row {
   cursor: pointer;
+  position: relative;
   transition: background-color 0.15s ease;
+}
+
+.playlist-view__row--menu-open {
+  z-index: 20;
 }
 
 .playlist-view__row:hover {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './PlaylistView.css';
 import type { Track } from '@shared/types';
 import { formatDuration } from '@client/utils/formatDuration';
@@ -35,6 +35,13 @@ function PlaylistView({
   const [activeMenuTrackId, setActiveMenuTrackId] = useState<string | null>(null);
   const [sortField, setSortField] = useState<SortField>('title');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  useEffect(() => {
+    if (activeMenuTrackId === null) return;
+    const handleClickOutside = () => setActiveMenuTrackId(null);
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, [activeMenuTrackId]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -120,12 +127,13 @@ function PlaylistView({
         </thead>
         <tbody>
           {sortedTracks.map((track) => {
-
             const isPlaying = track.id === currentTrackId;
             const isMenuOpen = activeMenuTrackId === track.id;
-            const rowClass = isPlaying
-              ? 'playlist-view__row playlist-view__row--playing'
-              : 'playlist-view__row';
+            const rowClass = [
+              'playlist-view__row',
+              isPlaying ? 'playlist-view__row--playing' : '',
+              isMenuOpen ? 'playlist-view__row--menu-open' : '',
+            ].filter(Boolean).join(' ');
             return (
               <tr
                 key={track.id}

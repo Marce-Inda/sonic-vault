@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './TrelloBoard.css';
 import type { Playlist, Track } from '@shared/types';
 import { formatDuration } from '@client/utils/formatDuration';
@@ -26,6 +26,13 @@ export function TrelloBoard({
 }: TrelloBoardProps) {
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
   const [activeMenuTrackId, setActiveMenuTrackId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (activeMenuTrackId === null) return;
+    const handleClickOutside = () => setActiveMenuTrackId(null);
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, [activeMenuTrackId]);
 
   const userPlaylists = playlists
     .map((p) => p.name)
