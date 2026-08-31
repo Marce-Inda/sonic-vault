@@ -55,20 +55,20 @@ export function createApp(clientDistPath?: string): Express {
     res.status(404).json({ success: false, error: 'Endpoint no encontrado' });
   });
 
-  // --- Static assets (production only) -----------------------------------
-  if (process.env.NODE_ENV === 'production') {
-    // The Vite client build outputs to <root>/dist/client. Resolve it from the
-    // process working directory (project root) so it is independent of the
-    // compiled server's nesting depth.
-    const clientDist = clientDistPath ?? path.resolve(process.cwd(), 'dist/client');
-    app.use(express.static(clientDist));
+  // --- Static assets & SPA fallback --------------------------------------
+  const clientDist = clientDistPath ?? path.resolve(process.cwd(), 'dist/client');
+  app.use(express.static(clientDist));
 
-    // SPA fallback: any non-API GET route returns the client index.html so
-    // client-side routing works on refresh/deep links.
-    app.get(/^(?!\/api\/).*/, (_req: Request, res: Response) => {
-      res.sendFile(path.join(clientDist, 'index.html'));
+  app.get('*', (req: Request, res: Response, next: NextFunction) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDist, 'index.html'), (err) => {
+      if (err) {
+        res.status(404).send('Not Found');
+      }
     });
-  }
+  });
 
   // --- Centralized error handler -----------------------------------------
   app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
