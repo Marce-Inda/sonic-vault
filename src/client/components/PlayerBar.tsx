@@ -20,12 +20,23 @@ import VolumeControl from './VolumeControl';
  *
  * Requirements: 5.3, 5.6, 2.2, 2.3, 2.4, 3.1, 3.3, 6.3
  */
-function PlayerBar() {
+interface PlayerBarProps {
+  onToggleVideoPanel?: () => void;
+  onOpenKaraoke?: () => void;
+  onOpenAgentChat?: () => void;
+  isVideoPanelOpen?: boolean;
+}
+
+function PlayerBar({
+  onToggleVideoPanel,
+  onOpenKaraoke,
+  onOpenAgentChat,
+  isVideoPanelOpen,
+}: PlayerBarProps) {
   const { state, dispatch } = usePlayer();
   const engine = useAudioEngine();
 
   const { currentTrack, isPlaying, currentTime, duration, volume, isMuted } = state;
-  // No track loaded → controls disabled, no track info (Req 5.6).
   const noTrack = currentTrack === null;
 
   const handlePlayPause = (): void => {
@@ -139,8 +150,46 @@ function PlayerBar() {
         />
       </div>
 
-      {/* Right — volume slider + mute toggle (Req 3.7, 3.8, 3.9). */}
+      {/* Right — volume slider + extra feature buttons (Video, Karaoke, AI Chat). */}
       <div className="player-bar__volume">
+        {onOpenKaraoke && (
+          <button
+            type="button"
+            className="player-bar__button"
+            onClick={onOpenKaraoke}
+            disabled={noTrack}
+            title="Karaoke y Letras Multilingües"
+          >
+            <span aria-hidden="true">🎤</span>
+          </button>
+        )}
+
+        {onToggleVideoPanel && (
+          <button
+            type="button"
+            className={
+              isVideoPanelOpen
+                ? 'player-bar__button player-bar__button--active'
+                : 'player-bar__button'
+            }
+            onClick={onToggleVideoPanel}
+            title="Panel de Video Lateral (Spotify Style)"
+          >
+            <span aria-hidden="true">🎬</span>
+          </button>
+        )}
+
+        {onOpenAgentChat && (
+          <button
+            type="button"
+            className="player-bar__button"
+            onClick={onOpenAgentChat}
+            title="SonicVault AI Orchestrator"
+          >
+            <span aria-hidden="true">🤖</span>
+          </button>
+        )}
+
         <VolumeControl
           volume={volume}
           isMuted={isMuted}

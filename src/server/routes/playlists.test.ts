@@ -87,6 +87,7 @@ describe('getPlaylists', () => {
       durationSeconds: 123,
       playlist: 'rock',
       streamUrl: '/api/stream/rock/song.mp3',
+      isVideo: false,
     });
   });
 

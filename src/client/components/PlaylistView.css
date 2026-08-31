@@ -168,7 +168,10 @@
   color: var(--color-text-primary);
   font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .playlist-view__dropdown-item:hover {
@@ -176,8 +179,52 @@
   color: var(--color-accent);
 }
 
-.playlist-view__dropdown-item--danger:hover {
-  color: #ff4d4f;
+.playlist-view__dropdown-item--included {
+  color: #00f0ff;
+  font-weight: 600;
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.playlist-view__dropdown-item--add-new {
+  color: var(--color-accent, #ff2a85);
+  font-weight: 600;
+}
+
+.playlist-view__new-form {
+  display: flex;
+  gap: 4px;
+  padding: var(--space-2);
+}
+
+.playlist-view__new-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-border);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.playlist-view__new-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.playlist-view__new-btn {
+  background: var(--color-accent, #ff2a85);
+  border: none;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.playlist-view__new-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .playlist-view__dropdown-divider {

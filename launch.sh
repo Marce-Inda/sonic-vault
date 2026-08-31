@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT_DIR="/home/marce-i/Documentos/proyectos/spotimp4"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR" || exit 1
 
 echo "========================================="

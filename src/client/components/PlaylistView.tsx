@@ -9,9 +9,11 @@ export interface PlaylistViewProps {
   currentTrackId: string | null;
   selectedPlaylist?: string | null;
   availablePlaylists?: string[];
+  playlists?: Playlist[];
   onPlayTrack: (track: Track, queue: Track[], index: number) => void;
   onAddTrackToPlaylist?: (playlistName: string, trackId: string) => void;
   onRemoveTrackFromPlaylist?: (playlistName: string, trackId: string) => void;
+  onCreatePlaylist?: (name: string, trackId?: string) => Promise<void> | void;
 }
 
 export function sortTracksAlphabetically(tracks: Track[]): Track[] {
@@ -28,17 +30,24 @@ function PlaylistView({
   currentTrackId,
   selectedPlaylist,
   availablePlaylists = [],
+  playlists = [],
   onPlayTrack,
   onAddTrackToPlaylist,
   onRemoveTrackFromPlaylist,
+  onCreatePlaylist,
 }: PlaylistViewProps) {
   const [activeMenuTrackId, setActiveMenuTrackId] = useState<string | null>(null);
   const [sortField, setSortField] = useState<SortField>('title');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [creatingForTrackId, setCreatingForTrackId] = useState<string | null>(null);
+  const [newPlaylistName, setNewPlaylistName] = useState('');
 
   useEffect(() => {
     if (activeMenuTrackId === null) return;
-    const handleClickOutside = () => setActiveMenuTrackId(null);
+    const handleClickOutside = () => {
+      setActiveMenuTrackId(null);
+      setCreatingForTrackId(null);
+    };
     window.addEventListener('click', handleClickOutside);
     return () => window.removeEventListener('click', handleClickOutside);
   }, [activeMenuTrackId]);
@@ -89,6 +98,25 @@ function PlaylistView({
   const getSortIcon = (field: SortField) => {
     if (sortField !== field) return '↕';
     return sortDirection === 'asc' ? '▲' : '▼';
+  };
+
+  const isTrackInPlaylist = (playlistName: string, trackId: string): boolean => {
+    const targetPl = playlists.find((p) => p.name === playlistName);
+    if (!targetPl) return false;
+    return targetPl.tracks.some(
+      (t) => t.id === trackId || t.fileName === trackId.split('/').pop()
+    );
+  };
+
+  const handleCreateAndAdd = async (trackId: string) => {
+    const name = newPlaylistName.trim();
+    if (!name || !onCreatePlaylist) return;
+
+    await onCreatePlaylist(name, trackId);
+
+    setNewPlaylistName('');
+    setCreatingForTrackId(null);
+    setActiveMenuTrackId(null);
   };
 
   return (
@@ -166,61 +194,104 @@ function PlaylistView({
                 <td
                   className="playlist-view__cell playlist-view__cell--actions"
                   onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
                 >
                   <div className="playlist-view__action-menu-wrapper">
                     <button
                       type="button"
                       className="playlist-view__action-btn"
                       title="Opciones de playlist"
-                      onClick={() =>
-                        setActiveMenuTrackId(isMenuOpen ? null : track.id)
-                      }
+                      onClick={() => {
+                        setActiveMenuTrackId(isMenuOpen ? null : track.id);
+                        setCreatingForTrackId(null);
+                      }}
                     >
                       +
                     </button>
                     {isMenuOpen && (
-                      <div className="playlist-view__dropdown">
+                      <div
+                        className="playlist-view__dropdown"
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      >
                         <div className="playlist-view__dropdown-header">
                           Añadir a playlist:
                         </div>
                         {userPlaylists.length === 0 ? (
                           <div className="playlist-view__dropdown-empty">
-                            Crea una playlist primero
+                            No hay playlists creadas
                           </div>
                         ) : (
-                          userPlaylists.map((pName) => (
-                            <button
-                              key={pName}
-                              type="button"
-                              className="playlist-view__dropdown-item"
-                              onClick={() => {
-                                if (onAddTrackToPlaylist) {
-                                  onAddTrackToPlaylist(pName, track.id);
-                                }
-                                setActiveMenuTrackId(null);
-                              }}
-                            >
-                              {pName}
-                            </button>
-                          ))
-                        )}
-                        {selectedPlaylist &&
-                          !selectedPlaylist.includes('Todas las canciones') &&
-                          onRemoveTrackFromPlaylist && (
-                            <>
-                              <hr className="playlist-view__dropdown-divider" />
+                          userPlaylists.map((pName) => {
+                            const included = isTrackInPlaylist(pName, track.id);
+                            return (
                               <button
+                                key={pName}
                                 type="button"
-                                className="playlist-view__dropdown-item playlist-view__dropdown-item--danger"
+                                className={`playlist-view__dropdown-item ${
+                                  included ? 'playlist-view__dropdown-item--included' : ''
+                                }`}
                                 onClick={() => {
-                                  onRemoveTrackFromPlaylist(selectedPlaylist, track.id);
+                                  if (included) {
+                                    if (onRemoveTrackFromPlaylist) {
+                                      onRemoveTrackFromPlaylist(pName, track.id);
+                                    }
+                                  } else {
+                                    if (onAddTrackToPlaylist) {
+                                      onAddTrackToPlaylist(pName, track.id);
+                                    }
+                                  }
                                   setActiveMenuTrackId(null);
                                 }}
                               >
-                                Quitar de esta playlist
+                                {included ? `✓ ${pName}` : pName}
                               </button>
-                            </>
-                          )}
+                            );
+                          })
+                        )}
+
+                        <hr className="playlist-view__dropdown-divider" />
+
+                        {creatingForTrackId === track.id ? (
+                          <form
+                            className="playlist-view__new-form"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              void handleCreateAndAdd(track.id);
+                            }}
+                          >
+                            <input
+                              type="text"
+                              className="playlist-view__new-input"
+                              placeholder="Nombre de la lista..."
+                              value={newPlaylistName}
+                              onChange={(e) => setNewPlaylistName(e.target.value)}
+                              onKeyDown={(e) => {
+                                e.stopPropagation();
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  void handleCreateAndAdd(track.id);
+                                }
+                              }}
+                              autoFocus
+                            />
+                            <button
+                              type="submit"
+                              className="playlist-view__new-btn"
+                              disabled={!newPlaylistName.trim()}
+                            >
+                              Guardar
+                            </button>
+                          </form>
+                        ) : (
+                          <button
+                            type="button"
+                            className="playlist-view__dropdown-item playlist-view__dropdown-item--add-new"
+                            onClick={() => setCreatingForTrackId(track.id)}
+                          >
+                            ➕ Crear nueva playlist...
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>

@@ -41,6 +41,8 @@ export interface Track {
   playlist: string;
   /** URL used to stream the audio: /api/stream/{playlist}/{fileName}. */
   streamUrl: string;
+  /** True if the track is a video file (.mp4). */
+  isVideo?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -184,5 +186,74 @@ export interface PlaylistActionResponse {
   message?: string;
   error?: string;
 }
+
+// ---------------------------------------------------------------------------
+// Lyrics, Phonetic & Translation models (Audio Hygiene & Karaoke Agent)
+// ---------------------------------------------------------------------------
+
+export interface LrcLine {
+  /** Timestamp in seconds (e.g. 12.34). */
+  timeSeconds: number;
+  /** Formatted LRC timestamp string (e.g. "00:12.34"). */
+  timestamp: string;
+  /** Original lyrics text in original script (Hangul, Kanji, English, etc). */
+  text: string;
+  /** Phonetic romanization (Romaja for Korean, Rōmaji for Japanese, Pinyin for Chinese). */
+  phonetic?: string;
+  /** Spanish translation. */
+  translationEs?: string;
+  /** English translation. */
+  translationEn?: string;
+}
+
+export interface SongLyrics {
+  trackId: string;
+  title: string;
+  artist: string;
+  language?: string;
+  hasPhonetic: boolean;
+  hasTranslationEs: boolean;
+  hasTranslationEn: boolean;
+  lines: LrcLine[];
+}
+
+export interface LyricsResponse {
+  success: boolean;
+  data?: SongLyrics;
+  error?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Multi-Agent System models (AI Orchestrator)
+// ---------------------------------------------------------------------------
+
+export type AgentRole = 'orchestrator' | 'hygiene' | 'curator' | 'scout';
+
+export interface AgentMessage {
+  id: string;
+  sender: AgentRole | 'user';
+  content: string;
+  timestamp: string;
+  actionDetails?: {
+    actionType?: 'create_playlist' | 'clean_metadata' | 'enrich_lyrics' | 'organize_board';
+    targetPlaylist?: string;
+    affectedTracks?: string[];
+  };
+}
+
+export interface AgentChatRequest {
+  message: string;
+  currentPlaylist?: string;
+  currentTrackId?: string;
+}
+
+export interface AgentChatResponse {
+  success: boolean;
+  reply: string;
+  messages?: AgentMessage[];
+  actionPerformed?: string;
+  error?: string;
+}
+
 
 

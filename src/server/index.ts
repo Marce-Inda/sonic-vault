@@ -1,3 +1,9 @@
+try {
+  process.loadEnvFile?.();
+} catch {
+  // .env file is optional
+}
+
 import { createApp } from './app.js';
 
 /**

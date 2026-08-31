@@ -39,11 +39,11 @@ input {
 /* ---- Root layout grid ---- */
 .app {
   display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-columns: var(--sidebar-width) 1fr auto;
   grid-template-rows: 1fr var(--player-height);
   grid-template-areas:
-    'sidebar main'
-    'player player';
+    'sidebar main videopanel'
+    'player player player';
   height: 100vh;
   width: 100vw;
   overflow: hidden;

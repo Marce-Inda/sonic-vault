@@ -292,13 +292,52 @@
   color: white;
 }
 
-.track-card__dropdown-item--danger {
-  color: #ff4d4f;
+.track-card__dropdown-item--included {
+  color: #00f0ff;
+  font-weight: 600;
+  background: rgba(0, 240, 255, 0.08);
 }
 
-.track-card__dropdown-item--danger:hover {
-  background-color: rgba(255, 77, 79, 0.2);
-  color: #ff4d4f;
+.track-card__dropdown-item--add-new {
+  color: var(--color-accent, #ff2a85);
+  font-weight: 600;
+}
+
+.track-card__new-form {
+  display: flex;
+  gap: 4px;
+  padding: 6px 12px;
+}
+
+.track-card__new-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-border);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.track-card__new-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.track-card__new-btn {
+  background: var(--color-accent, #ff2a85);
+  border: none;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.track-card__new-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .track-card__dropdown-divider {

@@ -13,6 +13,7 @@ export interface TrelloBoardProps {
   onAddTrackToPlaylist?: (playlistName: string, trackId: string) => void;
   onRemoveTrackFromPlaylist?: (playlistName: string, trackId: string) => void;
   onDeletePlaylist?: (name: string) => void;
+  onCreatePlaylist?: (name: string, trackId?: string) => Promise<void> | void;
 }
 
 export function TrelloBoard({
@@ -23,13 +24,19 @@ export function TrelloBoard({
   onAddTrackToPlaylist,
   onRemoveTrackFromPlaylist,
   onDeletePlaylist,
+  onCreatePlaylist,
 }: TrelloBoardProps) {
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
   const [activeMenuTrackId, setActiveMenuTrackId] = useState<string | null>(null);
+  const [creatingForTrackId, setCreatingForTrackId] = useState<string | null>(null);
+  const [newPlaylistName, setNewPlaylistName] = useState('');
 
   useEffect(() => {
     if (activeMenuTrackId === null) return;
-    const handleClickOutside = () => setActiveMenuTrackId(null);
+    const handleClickOutside = () => {
+      setActiveMenuTrackId(null);
+      setCreatingForTrackId(null);
+    };
     window.addEventListener('click', handleClickOutside);
     return () => window.removeEventListener('click', handleClickOutside);
   }, [activeMenuTrackId]);
@@ -37,6 +44,25 @@ export function TrelloBoard({
   const userPlaylists = playlists
     .map((p) => p.name)
     .filter((name) => !name.includes('Todas las canciones'));
+
+  const isTrackInPlaylistName = (targetPlaylistName: string, trackId: string): boolean => {
+    const targetPl = playlists.find((p) => p.name === targetPlaylistName);
+    if (!targetPl) return false;
+    return targetPl.tracks.some(
+      (t) => t.id === trackId || t.fileName === trackId.split('/').pop()
+    );
+  };
+
+  const handleCreateAndAdd = async (trackId: string) => {
+    const name = newPlaylistName.trim();
+    if (!name || !onCreatePlaylist) return;
+
+    await onCreatePlaylist(name, trackId);
+
+    setNewPlaylistName('');
+    setCreatingForTrackId(null);
+    setActiveMenuTrackId(null);
+  };
 
   const handleDragStart = (e: React.DragEvent, track: Track, sourcePlaylistName: string) => {
     e.dataTransfer.setData(
@@ -210,30 +236,85 @@ export function TrelloBoard({
                           <div
                             className="track-card__dropdown"
                             onClick={(e) => e.stopPropagation()}
+                            onKeyDown={(e) => e.stopPropagation()}
                           >
                             <div className="track-card__dropdown-header">
                               Añadir a playlist:
                             </div>
                             {userPlaylists.length === 0 ? (
                               <div className="track-card__dropdown-item" style={{ color: 'var(--color-text-secondary)' }}>
-                                Crea una playlist primero
+                                No hay playlists creadas
                               </div>
                             ) : (
-                              userPlaylists.map((targetPlaylist) => (
-                                <button
-                                  key={targetPlaylist}
-                                  type="button"
-                                  className="track-card__dropdown-item"
-                                  onClick={() => {
-                                    if (onAddTrackToPlaylist) {
-                                      onAddTrackToPlaylist(targetPlaylist, track.id);
+                              userPlaylists.map((targetPlaylist) => {
+                                const included = isTrackInPlaylistName(targetPlaylist, track.id);
+                                return (
+                                  <button
+                                    key={targetPlaylist}
+                                    type="button"
+                                    className={`track-card__dropdown-item ${
+                                      included ? 'track-card__dropdown-item--included' : ''
+                                    }`}
+                                    onClick={() => {
+                                      if (included) {
+                                        if (onRemoveTrackFromPlaylist) {
+                                          onRemoveTrackFromPlaylist(targetPlaylist, track.id);
+                                        }
+                                      } else {
+                                        if (onAddTrackToPlaylist) {
+                                          onAddTrackToPlaylist(targetPlaylist, track.id);
+                                        }
+                                      }
+                                      setActiveMenuTrackId(null);
+                                    }}
+                                  >
+                                    {included ? `✓ ${targetPlaylist}` : targetPlaylist}
+                                  </button>
+                                );
+                              })
+                            )}
+
+                            <hr className="track-card__dropdown-divider" />
+
+                            {creatingForTrackId === track.id ? (
+                              <form
+                                className="track-card__new-form"
+                                onSubmit={(e) => {
+                                  e.preventDefault();
+                                  void handleCreateAndAdd(track.id);
+                                }}
+                              >
+                                <input
+                                  type="text"
+                                  className="track-card__new-input"
+                                  placeholder="Nombre de la lista..."
+                                  value={newPlaylistName}
+                                  onChange={(e) => setNewPlaylistName(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    e.stopPropagation();
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      void handleCreateAndAdd(track.id);
                                     }
-                                    setActiveMenuTrackId(null);
                                   }}
+                                  autoFocus
+                                />
+                                <button
+                                  type="submit"
+                                  className="track-card__new-btn"
+                                  disabled={!newPlaylistName.trim()}
                                 >
-                                  {targetPlaylist}
+                                  Guardar
                                 </button>
-                              ))
+                              </form>
+                            ) : (
+                              <button
+                                type="button"
+                                className="track-card__dropdown-item track-card__dropdown-item--add-new"
+                                onClick={() => setCreatingForTrackId(track.id)}
+                              >
+                                ➕ Crear nueva playlist...
+                              </button>
                             )}
 
                             {!isMaster && onRemoveTrackFromPlaylist && (

@@ -99,8 +99,11 @@ export function createApp(clientDistPath?: string): Express {
  *
  * ```
  */
-function registerApiRoutes(app: Express): void {
+import { agentRouter } from './routes/agentRoutes.js';
 
+function registerApiRoutes(app: Express): void {
+  // Multi-Agent AI System & Lyrics API
+  app.use('/api/agent', agentRouter);
 
   // Task 4.1: GET /api/playlists
   app.use('/api/playlists', playlistsRouter);

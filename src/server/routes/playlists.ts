@@ -116,6 +116,7 @@ export async function getPlaylists(
             durationSeconds: metadata.durationSeconds,
             playlist: playlistInfo.name,
             streamUrl: buildStreamUrl(playlistInfo.name, trackFile.fileName),
+            isVideo: trackFile.extension === 'mp4' || trackFile.fileName.toLowerCase().endsWith('.mp4'),
           };
         }),
       );

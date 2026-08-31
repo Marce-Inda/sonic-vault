@@ -18,6 +18,9 @@ import TrelloBoard from './components/TrelloBoard';
 import SearchBar from './components/SearchBar';
 import PlayerBar from './components/PlayerBar';
 import DownloadBar from './components/DownloadBar';
+import VideoPanel from './components/VideoPanel';
+import KaraokeLyricsModal from './components/KaraokeLyricsModal';
+import AgentChatDrawer from './components/AgentChatDrawer';
 
 
 
@@ -53,6 +56,9 @@ function AppContent() {
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'trello' | 'table'>('table');
+  const [isVideoPanelOpen, setIsVideoPanelOpen] = useState(true);
+  const [isKaraokeOpen, setIsKaraokeOpen] = useState(false);
+  const [isAgentChatOpen, setIsAgentChatOpen] = useState(false);
 
   // Load playlists once on mount (Req 1.1). fetchPlaylists never throws: a
   // failed scan or network error resolves with success:false + an error.
@@ -131,10 +137,13 @@ function AppContent() {
     });
   };
 
-  const handleCreatePlaylist = async (name: string): Promise<void> => {
+  const handleCreatePlaylist = async (name: string, trackIdToAdd?: string): Promise<void> => {
     const res = await createPlaylistApi(name);
     if (res.success) {
-      handleRefreshPlaylists();
+      if (trackIdToAdd) {
+        await addTrackToPlaylistApi(name, trackIdToAdd);
+      }
+      await handleRefreshPlaylists();
       setSelectedPlaylist(name);
     }
   };
@@ -237,6 +246,7 @@ function AppContent() {
                 onAddTrackToPlaylist={handleAddTrackToPlaylist}
                 onRemoveTrackFromPlaylist={handleRemoveTrackFromPlaylist}
                 onDeletePlaylist={handleDeletePlaylist}
+                onCreatePlaylist={handleCreatePlaylist}
               />
             ) : (
               <PlaylistView
@@ -244,20 +254,46 @@ function AppContent() {
                 currentTrackId={state.currentTrack?.id ?? null}
                 selectedPlaylist={selectedPlaylist}
                 availablePlaylists={playlists.map((p) => p.name)}
+                playlists={playlists}
                 onPlayTrack={handlePlayTrack}
                 onAddTrackToPlaylist={handleAddTrackToPlaylist}
                 onRemoveTrackFromPlaylist={handleRemoveTrackFromPlaylist}
+                onCreatePlaylist={handleCreatePlaylist}
               />
             )}
           </>
         )}
       </main>
 
-
+      <VideoPanel
+        track={state.currentTrack}
+        isPlaying={state.isPlaying}
+        currentTime={state.currentTime}
+        isOpen={isVideoPanelOpen}
+        onClose={() => setIsVideoPanelOpen(false)}
+      />
 
       <footer className="app__player" aria-label="Barra de reproducción">
-        <PlayerBar />
+        <PlayerBar
+          onToggleVideoPanel={() => setIsVideoPanelOpen((prev) => !prev)}
+          onOpenKaraoke={() => setIsKaraokeOpen(true)}
+          onOpenAgentChat={() => setIsAgentChatOpen(true)}
+          isVideoPanelOpen={isVideoPanelOpen}
+        />
       </footer>
+
+      <KaraokeLyricsModal
+        track={state.currentTrack}
+        currentTime={state.currentTime}
+        isOpen={isKaraokeOpen}
+        onClose={() => setIsKaraokeOpen(false)}
+      />
+
+      <AgentChatDrawer
+        isOpen={isAgentChatOpen}
+        onClose={() => setIsAgentChatOpen(false)}
+        onRefreshPlaylists={handleRefreshPlaylists}
+      />
 
       {/* Transient notification when a track fails to play (Req 2.7). It is
           auto-dismissed and can also be closed manually. */}
