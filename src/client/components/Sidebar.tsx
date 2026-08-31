@@ -11,6 +11,7 @@ export interface SidebarProps {
   onDeletePlaylist?: (name: string) => void;
   onToggleMode?: (mode: 'local' | 'stream') => void;
   onOpenLocalFolder?: () => void;
+  onOpenAgentChat?: () => void;
 }
 
 function Sidebar({
@@ -22,6 +23,7 @@ function Sidebar({
   onDeletePlaylist,
   onToggleMode,
   onOpenLocalFolder,
+  onOpenAgentChat,
 }: SidebarProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
@@ -153,6 +155,26 @@ function Sidebar({
           );
         })}
       </ul>
+
+      {/* Prominent AI Orchestrator Banner Widget at Bottom of Sidebar */}
+      {onOpenAgentChat && (
+        <div
+          className="sidebar__agent-widget"
+          onClick={onOpenAgentChat}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && onOpenAgentChat()}
+        >
+          <div className="agent-widget__badge">🤖 SonicVault AI DJ</div>
+          <h3 className="agent-widget__title">Orquestador de Música</h3>
+          <p className="agent-widget__desc">
+            Pídele armar playlists, sugerirte canciones o buscar música en streaming.
+          </p>
+          <button type="button" className="agent-widget__btn">
+            ✨ Abrir Asistente IA
+          </button>
+        </div>
+      )}
     </nav>
   );
 }

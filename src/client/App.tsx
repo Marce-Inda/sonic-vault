@@ -221,6 +221,7 @@ function AppContent() {
           onDeletePlaylist={handleDeletePlaylist}
           onToggleMode={setAppMode}
           onOpenLocalFolder={handleOpenLocalFolder}
+          onOpenAgentChat={() => setIsAgentChatOpen(true)}
         />
       </aside>
 
