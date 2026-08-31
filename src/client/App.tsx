@@ -178,15 +178,47 @@ function AppContent() {
     }
   };
 
+  const [appMode, setAppMode] = useState<'local' | 'stream'>('local');
+
+  const handleOpenLocalFolder = async () => {
+    try {
+      if ('showDirectoryPicker' in window) {
+        await (window as any).showDirectoryPicker();
+        handleRefreshPlaylists();
+      } else {
+        alert('Carga de carpeta local disponible en navegadores modernos (Chrome/Edge/Brave).');
+      }
+    } catch {
+      // User cancelled picker
+    }
+  };
+
+  const handleDownloadFromAgent = async (query: string) => {
+    try {
+      const targetPl = selectedPlaylist || 'Descargas';
+      await fetch('/api/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, playlistName: targetPl, format: 'mp3' }),
+      });
+      handleRefreshPlaylists();
+    } catch {
+      // Ignore
+    }
+  };
+
   return (
     <div className="app">
       <aside className="app__sidebar">
         <Sidebar
           playlists={playlists}
           selectedPlaylist={selectedPlaylist}
+          mode={appMode}
           onSelectPlaylist={handleSelectPlaylist}
           onCreatePlaylist={handleCreatePlaylist}
           onDeletePlaylist={handleDeletePlaylist}
+          onToggleMode={setAppMode}
+          onOpenLocalFolder={handleOpenLocalFolder}
         />
       </aside>
 
@@ -293,6 +325,7 @@ function AppContent() {
         isOpen={isAgentChatOpen}
         onClose={() => setIsAgentChatOpen(false)}
         onRefreshPlaylists={handleRefreshPlaylists}
+        onDownloadTrack={handleDownloadFromAgent}
       />
 
       {/* Transient notification when a track fails to play (Req 2.7). It is

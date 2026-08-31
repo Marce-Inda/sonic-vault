@@ -6,12 +6,14 @@ interface AgentChatDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onRefreshPlaylists?: () => void;
+  onDownloadTrack?: (query: string) => void;
 }
 
 export const AgentChatDrawer: React.FC<AgentChatDrawerProps> = ({
   isOpen,
   onClose,
   onRefreshPlaylists,
+  onDownloadTrack,
 }) => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -110,6 +112,15 @@ export const AgentChatDrawer: React.FC<AgentChatDrawerProps> = ({
         >
           💜 Playlist K-Pop
         </button>
+        {onDownloadTrack && (
+          <button
+            type="button"
+            className="sugg-btn sugg-btn--dl"
+            onClick={() => onDownloadTrack('Stray Kids - Chk Chk Boom')}
+          >
+            ⬇ Descargar "Chk Chk Boom"
+          </button>
+        )}
         <button
           type="button"
           className="sugg-btn"

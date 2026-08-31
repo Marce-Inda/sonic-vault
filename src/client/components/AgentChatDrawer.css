@@ -109,6 +109,19 @@
   color: #fff;
 }
 
+.sugg-btn--dl {
+  background: rgba(255, 42, 133, 0.2);
+  border-color: rgba(255, 42, 133, 0.5);
+  color: #ff85c0;
+  font-weight: 600;
+}
+
+.sugg-btn--dl:hover {
+  background: rgba(255, 42, 133, 0.4);
+  border-color: #ff2a85;
+  color: #fff;
+}
+
 .agent-drawer__footer {
   display: flex;
   gap: 8px;

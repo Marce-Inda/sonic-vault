@@ -5,17 +5,23 @@ import type { Playlist } from '@shared/types';
 export interface SidebarProps {
   playlists: Playlist[];
   selectedPlaylist: string | null;
+  mode?: 'local' | 'stream';
   onSelectPlaylist: (name: string) => void;
   onCreatePlaylist?: (name: string) => void;
   onDeletePlaylist?: (name: string) => void;
+  onToggleMode?: (mode: 'local' | 'stream') => void;
+  onOpenLocalFolder?: () => void;
 }
 
 function Sidebar({
   playlists,
   selectedPlaylist,
+  mode = 'local',
   onSelectPlaylist,
   onCreatePlaylist,
   onDeletePlaylist,
+  onToggleMode,
+  onOpenLocalFolder,
 }: SidebarProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
@@ -35,6 +41,35 @@ function Sidebar({
         <span className="sidebar__brand-icon">⚡</span>
         <h1 className="sidebar__brand-title">SonicVault</h1>
       </div>
+
+      {onToggleMode && (
+        <div className="sidebar__mode-toggle">
+          <button
+            type="button"
+            className={`sidebar__mode-btn ${mode === 'local' ? 'sidebar__mode-btn--active' : ''}`}
+            onClick={() => onToggleMode('local')}
+          >
+            📂 Biblioteca
+          </button>
+          <button
+            type="button"
+            className={`sidebar__mode-btn ${mode === 'stream' ? 'sidebar__mode-btn--active' : ''}`}
+            onClick={() => onToggleMode('stream')}
+          >
+            🌐 Stream
+          </button>
+        </div>
+      )}
+
+      {onOpenLocalFolder && (
+        <button
+          type="button"
+          className="sidebar__folder-btn"
+          onClick={onOpenLocalFolder}
+        >
+          📁 Cargar Carpeta Local
+        </button>
+      )}
 
       <div className="sidebar__header">
         <h2 className="sidebar__title">Playlists</h2>
