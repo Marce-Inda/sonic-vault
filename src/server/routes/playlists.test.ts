@@ -19,6 +19,7 @@ import express from 'express';
 import request from 'supertest';
 
 import { getPlaylists, buildStreamUrl, buildTrackId, playlistsRouter } from './playlists';
+import { getVirtualPlaylists } from '../services/virtualPlaylistStore';
 import type { TrackMetadata } from '@shared/types';
 
 let tmpRoot: string;
@@ -102,8 +103,9 @@ describe('getPlaylists', () => {
     const response = await getPlaylists(tmpRoot, { parseMetadata: fakeParseMetadata });
 
     expect(response.success).toBe(true);
+    const virtualNames = new Set(getVirtualPlaylists().map((v) => v.name));
     const folderPlaylists = response.data.filter(
-      (p) => !p.name.includes('Todas las canciones') && !p.name.startsWith('⭐'),
+      (p) => !p.name.includes('Todas las canciones') && !virtualNames.has(p.name),
     );
     expect(folderPlaylists.map((p) => p.name)).toEqual(['alpha', 'Zeta']);
     expect(folderPlaylists[0].trackCount).toBe(2);
@@ -116,8 +118,9 @@ describe('getPlaylists', () => {
     const response = await getPlaylists(tmpRoot, { parseMetadata: fakeParseMetadata });
 
     expect(response.success).toBe(true);
+    const virtualNames = new Set(getVirtualPlaylists().map((v) => v.name));
     const folderPlaylists = response.data.filter(
-      (p) => !p.name.includes('Todas las canciones') && !p.name.startsWith('⭐'),
+      (p) => !p.name.includes('Todas las canciones') && !virtualNames.has(p.name),
     );
     expect(folderPlaylists).toEqual([
       { name: 'empty', trackCount: 0, tracks: [] },

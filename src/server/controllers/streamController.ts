@@ -26,17 +26,15 @@ import type { Request, Response } from 'express';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import { MUSIC_FOLDER_PATH } from '../routes/playlists.js';
+
 /**
  * Absolute path to the "musica" folder.
  *
- * Resolved relative to the process working directory (the project root) so it
- * is consistent across dev (tsx), the compiled production build (npm start),
- * and the test runner — none of which share the same `__dirname` depth. Can be
- * overridden with the MUSIC_DIR environment variable.
+ * Uses {@link MUSIC_FOLDER_PATH} to ensure consistent resolution across routes,
+ * downloader service, and stream controller.
  */
-export const MUSIC_ROOT = process.env.MUSIC_DIR
-  ? path.resolve(process.env.MUSIC_DIR)
-  : path.resolve(process.cwd(), 'musica');
+export const MUSIC_ROOT = MUSIC_FOLDER_PATH;
 
 /** Maps a supported audio extension to its MIME type. */
 const MIME_TYPES: Record<string, string> = {
