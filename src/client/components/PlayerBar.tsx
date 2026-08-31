@@ -116,7 +116,7 @@ function PlayerBar({
             onClick={() => dispatch({ type: 'TOGGLE_SHUFFLE' })}
             disabled={noTrack}
             aria-label="Modo aleatorio"
-            title={state.isShuffle ? 'Modo aleatorio: Activado' : 'Modo aleatorio: Desactivado'}
+            title={state.isShuffle ? 'Modo Aleatorio: Activado (Mezcla las canciones al azar)' : 'Modo Aleatorio: Desactivado (Reproduce en orden)'}
           >
             <span aria-hidden="true">🔀</span>
           </button>
@@ -126,7 +126,7 @@ function PlayerBar({
             onClick={handlePrevious}
             disabled={noTrack}
             aria-label="Anterior"
-            title="Anterior"
+            title="Pista Anterior: Regresa a la canción previa de la playlist"
           >
             <span aria-hidden="true">⏮</span>
           </button>
@@ -136,7 +136,7 @@ function PlayerBar({
             onClick={handlePlayPause}
             disabled={noTrack}
             aria-label={playPauseLabel}
-            title={playPauseLabel}
+            title={isPlaying ? 'Pausar Reproducción: Pausa temporalmente la canción activa' : 'Reproducir: Inicia o reanuda la canción activa'}
           >
             <span aria-hidden="true">{isPlaying ? '⏸' : '▶'}</span>
           </button>
@@ -146,7 +146,7 @@ function PlayerBar({
             onClick={handleNext}
             disabled={noTrack}
             aria-label="Siguiente"
-            title="Siguiente"
+            title="Siguiente Pista: Salta a la siguiente canción de la playlist"
           >
             <span aria-hidden="true">⏭</span>
           </button>
@@ -168,7 +168,7 @@ function PlayerBar({
             className="player-bar__button"
             onClick={onOpenKaraoke}
             disabled={noTrack}
-            title="Karaoke y Letras Multilingües"
+            title="Karaoke & Letras: Muestra la letra sincronizada en pantalla completa con fonética Romaja y español"
           >
             <span aria-hidden="true">🎤</span>
           </button>
@@ -183,7 +183,7 @@ function PlayerBar({
                 : 'player-bar__button'
             }
             onClick={onToggleVideoPanel}
-            title="Panel de Video Lateral (Spotify Style)"
+            title="Panel de Video Lateral (50% Pantalla): Abre u oculta el reproductor de video gigante y la lírica"
           >
             <span aria-hidden="true">🎬</span>
           </button>
@@ -194,7 +194,7 @@ function PlayerBar({
             type="button"
             className="player-bar__button"
             onClick={onOpenAgentChat}
-            title="SonicVault AI Orchestrator"
+            title="Asistente de IA: Abre el chat interactivo para pedirle recomendaciones musicales"
           >
             <span aria-hidden="true">🤖</span>
           </button>

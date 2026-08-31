@@ -125,6 +125,7 @@ export const AgentChatDrawer: React.FC<AgentChatDrawerProps> = ({
           type="button"
           className="sugg-btn"
           onClick={() => handleSend('Limpia metadatos de canciones')}
+          title="Le pide al Agente que organice y arregle automáticamente los nombres de canciones y artistas"
         >
           🏷️ Limpiar Metadatos
         </button>
@@ -143,8 +144,14 @@ export const AgentChatDrawer: React.FC<AgentChatDrawerProps> = ({
           placeholder="Pídele algo al Orquestador..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          title="Escribe cualquier petición para tu Agente DJ (ejemplo: 'recomiendame temas de rock', 'armame una playlist')"
         />
-        <button type="submit" className="agent-drawer__send-btn" disabled={loading}>
+        <button
+          type="submit"
+          className="agent-drawer__send-btn"
+          disabled={loading}
+          title="Enviar consulta al Orquestador de IA"
+        >
           Enviar
         </button>
       </form>

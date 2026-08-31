@@ -50,6 +50,7 @@ function Sidebar({
             type="button"
             className={`sidebar__mode-btn ${mode === 'local' ? 'sidebar__mode-btn--active' : ''}`}
             onClick={() => onToggleMode('local')}
+            title="Modo Biblioteca: Explora y reproduce tus listas y temas locales descargados"
           >
             📂 Biblioteca
           </button>
@@ -57,6 +58,7 @@ function Sidebar({
             type="button"
             className={`sidebar__mode-btn ${mode === 'stream' ? 'sidebar__mode-btn--active' : ''}`}
             onClick={() => onToggleMode('stream')}
+            title="Modo Stream: Busca y reproduce cualquier canción o video online sin descargar nada"
           >
             🌐 Stream
           </button>
@@ -68,6 +70,7 @@ function Sidebar({
           type="button"
           className="sidebar__folder-btn"
           onClick={onOpenLocalFolder}
+          title="Cargar Carpeta Local: Selecciona tu carpeta de música en tu laptop para reproducirla directamente gratis y sin subir archivos a la nube"
         >
           📁 Cargar Carpeta Local
         </button>
@@ -80,7 +83,7 @@ function Sidebar({
           <button
             type="button"
             className="sidebar__add-btn"
-            title="Crear nueva playlist"
+            title="Crear Nueva Playlist: Crea una lista personalizada para organizar tus canciones"
             onClick={() => setIsCreating(!isCreating)}
           >
             + Crear
@@ -99,13 +102,14 @@ function Sidebar({
             autoFocus
           />
           <div className="sidebar__create-actions">
-            <button type="submit" className="sidebar__create-btn">
+            <button type="submit" className="sidebar__create-btn" title="Guardar nueva playlist">
               Guardar
             </button>
             <button
               type="button"
               className="sidebar__cancel-btn"
               onClick={() => setIsCreating(false)}
+              title="Cancelar creación"
             >
               Cancelar
             </button>
@@ -129,6 +133,7 @@ function Sidebar({
                   }
                   aria-current={isSelected ? 'true' : undefined}
                   onClick={() => onSelectPlaylist(playlist.name)}
+                  title={`Seleccionar playlist "${playlist.name}" (${playlist.trackCount} pistas)`}
                 >
                   <span className="sidebar__name">{playlist.name}</span>
                   <span className="sidebar__count">
@@ -139,7 +144,7 @@ function Sidebar({
                   <button
                     type="button"
                     className="sidebar__delete-btn"
-                    title={`Eliminar playlist ${playlist.name}`}
+                    title={`Eliminar la playlist "${playlist.name}"`}
                     onClick={(e) => {
                       e.stopPropagation();
                       if (confirm(`¿Eliminar la playlist "${playlist.name}"?`)) {

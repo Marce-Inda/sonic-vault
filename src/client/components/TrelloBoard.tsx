@@ -226,7 +226,7 @@ export function TrelloBoard({
                             <button
                               type="button"
                               className="track-card__info-btn"
-                              title="Información Trello"
+                              title={`Ver Ficha Trello de información detallada de "${track.title}"`}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onOpenInfoModal(track);
@@ -238,7 +238,7 @@ export function TrelloBoard({
                           <button
                             type="button"
                             className="track-card__menu-btn"
-                            title="Opciones"
+                            title={`Opciones y mover "${track.title}" a otra playlist`}
                             onClick={(e) => {
                               e.stopPropagation();
                               const menuKey = `${playlist.name}-${track.id}`;

@@ -102,6 +102,7 @@ export default function DownloadBar({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             disabled={isSubmitting}
+            title="Buscador y Descargador: Pega una URL directa de YouTube/Spotify o escribe el nombre de cualquier artista o canción"
           />
         </div>
 
@@ -109,6 +110,7 @@ export default function DownloadBar({
           className="download-bar__select"
           value={targetPlaylist}
           onChange={(e) => setTargetPlaylist(e.target.value)}
+          title="Playlist de Destino: Elige en qué lista se guardará automáticamente la canción que vas a descargar"
         >
           {playlists.map((name) => (
             <option key={name} value={name}>
@@ -123,6 +125,7 @@ export default function DownloadBar({
             type="button"
             className={`download-bar__format-btn ${format === 'mp3' ? 'active' : ''}`}
             onClick={() => setFormat('mp3')}
+            title="Formato Audio MP3: Descarga únicamente la pista de sonido en alta calidad"
           >
             MP3
           </button>
@@ -130,6 +133,7 @@ export default function DownloadBar({
             type="button"
             className={`download-bar__format-btn ${format === 'mp4' ? 'active' : ''}`}
             onClick={() => setFormat('mp4')}
+            title="Formato Video MP4: Descarga el video musical completo para reproducirlo en el panel de video"
           >
             MP4
           </button>
@@ -139,6 +143,7 @@ export default function DownloadBar({
           type="submit"
           className="download-bar__submit"
           disabled={!query.trim() || isSubmitting}
+          title="Descargar Canción: Inicia la descarga automática en 1-clic y la guarda en la playlist elegida"
         >
           {isSubmitting ? 'Iniciando…' : '⬇ Descargar'}
         </button>
@@ -147,7 +152,7 @@ export default function DownloadBar({
           type="button"
           className="download-bar__history-btn"
           onClick={() => setIsHistoryOpen(true)}
-          title="Ver historial de descargas"
+          title="Historial de Descargas: Revisa el estado de todas tus descargas pasadas y actuales"
         >
           📜 Historial
         </button>
