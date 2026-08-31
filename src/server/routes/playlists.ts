@@ -83,7 +83,7 @@ export function buildTrackId(playlist: string, fileName: string): string {
 import { getVirtualPlaylists } from '../services/virtualPlaylistStore.js';
 
 export async function getPlaylists(
-  basePath: string = MUSIC_FOLDER_PATH,
+  basePath: string = resolveMusicFolderPath(),
   deps: {
     scan?: typeof scanMusicFolder;
     parseMetadata?: typeof parseTrackMetadata;
