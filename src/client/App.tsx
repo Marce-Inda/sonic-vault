@@ -243,6 +243,7 @@ function AppContent() {
             <DownloadBar
               playlists={playlists.map((p) => p.name)}
               selectedPlaylist={selectedPlaylist}
+              mode={appMode}
               onDownloadComplete={handleRefreshPlaylists}
             />
 

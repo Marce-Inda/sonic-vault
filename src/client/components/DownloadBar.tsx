@@ -7,12 +7,14 @@ import '../styles/DownloadBar.css';
 interface DownloadBarProps {
   playlists: string[];
   selectedPlaylist: string | null;
+  mode?: 'local' | 'stream';
   onDownloadComplete: () => void;
 }
 
 export default function DownloadBar({
   playlists,
   selectedPlaylist,
+  mode = 'local',
   onDownloadComplete,
 }: DownloadBarProps) {
   const [query, setQuery] = useState('');
@@ -67,7 +69,11 @@ export default function DownloadBar({
     if (!query.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
-    setToastMessage('Iniciando descarga en segundo plano...');
+    setToastMessage(
+      mode === 'stream'
+        ? '⚡ Preparando stream online...'
+        : 'Iniciando descarga en segundo plano...'
+    );
 
     const res = await requestDownload(query.trim(), targetPlaylist.trim(), format);
 
@@ -75,14 +81,18 @@ export default function DownloadBar({
 
     if (res.success) {
       setQuery('');
-      setToastMessage(res.message || 'Descarga iniciada en segundo plano');
-      setTimeout(() => setToastMessage(null), 4000);
+      setToastMessage(
+        mode === 'stream'
+          ? '▶ Pista lista en tu playlist. Haz clic para reproducir en stream.'
+          : res.message || 'Descarga iniciada en segundo plano'
+      );
+      setTimeout(() => setToastMessage(null), 5000);
       const statusRes = await fetchDownloadStatus();
       if (statusRes.success && statusRes.jobs) {
         setActiveJobs(statusRes.jobs);
       }
     } else {
-      setToastMessage(`Error: ${res.error || 'No se pudo iniciar la descarga'}`);
+      setToastMessage(`Error: ${res.error || 'No se pudo procesar la solicitud'}`);
       setTimeout(() => setToastMessage(null), 5000);
     }
   };
@@ -93,16 +103,30 @@ export default function DownloadBar({
 
   return (
     <div className="download-bar">
+      {mode === 'stream' && (
+        <div className="download-bar__stream-banner">
+          <span>🌐 <strong>Modo Streaming Online Activo</strong> — Escribe cualquier canción, artista o pega un link para escuchar inmediatamente.</span>
+        </div>
+      )}
+
       <form className="download-bar__form" onSubmit={handleSubmit}>
         <div className="download-bar__input-wrapper">
           <input
             type="text"
             className="download-bar__input"
-            placeholder="Pegar link de Spotify / YouTube o término..."
+            placeholder={
+              mode === 'stream'
+                ? '🌐 Escribe un tema o pega link de YouTube/Spotify para escuchar en STREAM...'
+                : 'Pegar link de Spotify / YouTube o término...'
+            }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             disabled={isSubmitting}
-            title="Buscador y Descargador: Pega una URL directa de YouTube/Spotify o escribe el nombre de cualquier artista o canción"
+            title={
+              mode === 'stream'
+                ? 'Buscador de Stream Online: Escribe el nombre de una canción o pega un enlace para escucharla en directo sin descargar'
+                : 'Buscador y Descargador: Pega una URL directa de YouTube/Spotify o escribe el nombre de cualquier artista o canción'
+            }
           />
         </div>
 
@@ -110,7 +134,7 @@ export default function DownloadBar({
           className="download-bar__select"
           value={targetPlaylist}
           onChange={(e) => setTargetPlaylist(e.target.value)}
-          title="Playlist de Destino: Elige en qué lista se guardará automáticamente la canción que vas a descargar"
+          title="Playlist de Destino: Elige en qué lista se organizará la canción"
         >
           {playlists.map((name) => (
             <option key={name} value={name}>
@@ -125,7 +149,7 @@ export default function DownloadBar({
             type="button"
             className={`download-bar__format-btn ${format === 'mp3' ? 'active' : ''}`}
             onClick={() => setFormat('mp3')}
-            title="Formato Audio MP3: Descarga únicamente la pista de sonido en alta calidad"
+            title="Formato Audio MP3: Reproducir/Descargar únicamente el sonido en alta calidad"
           >
             MP3
           </button>
@@ -133,7 +157,7 @@ export default function DownloadBar({
             type="button"
             className={`download-bar__format-btn ${format === 'mp4' ? 'active' : ''}`}
             onClick={() => setFormat('mp4')}
-            title="Formato Video MP4: Descarga el video musical completo para reproducirlo en el panel de video"
+            title="Formato Video MP4: Reproducir/Descargar el video musical completo"
           >
             MP4
           </button>
@@ -143,16 +167,24 @@ export default function DownloadBar({
           type="submit"
           className="download-bar__submit"
           disabled={!query.trim() || isSubmitting}
-          title="Descargar Canción: Inicia la descarga automática en 1-clic y la guarda en la playlist elegida"
+          title={
+            mode === 'stream'
+              ? 'Escuchar Ya (Stream): Procesa la canción para iniciar la reproducción online inmediatamente'
+              : 'Descargar Canción: Inicia la descarga automática en 1-clic y la guarda en la playlist elegida'
+          }
         >
-          {isSubmitting ? 'Iniciando…' : '⬇ Descargar'}
+          {isSubmitting
+            ? 'Cargando…'
+            : mode === 'stream'
+            ? '▶ Stream / Escuchar Ya'
+            : '⬇ Descargar'}
         </button>
 
         <button
           type="button"
           className="download-bar__history-btn"
           onClick={() => setIsHistoryOpen(true)}
-          title="Historial de Descargas: Revisa el estado de todas tus descargas pasadas y actuales"
+          title="Historial de Descargas y Streaming: Revisa tus peticiones anteriores"
         >
           📜 Historial
         </button>
