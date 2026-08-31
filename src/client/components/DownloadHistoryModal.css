@@ -1,0 +1,160 @@
+.download-modal__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.download-modal__content {
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.download-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.download-modal__header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+}
+
+.download-modal__close-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.download-modal__close-btn:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-hover);
+}
+
+.download-modal__body {
+  padding: var(--space-4);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.download-modal__empty {
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.download-modal__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.download-modal__item {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.download-modal__item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.download-modal__item-query {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  word-break: break-all;
+}
+
+.download-modal__badge {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.download-modal__badge--completed {
+  background-color: rgba(30, 215, 96, 0.2);
+  color: #1ed760;
+}
+
+.download-modal__badge--downloading {
+  background-color: rgba(229, 9, 20, 0.2);
+  color: var(--color-accent);
+}
+
+.download-modal__badge--error {
+  background-color: rgba(255, 77, 79, 0.2);
+  color: #ff4d4f;
+}
+
+.download-modal__badge--pending {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-secondary);
+}
+
+.download-modal__item-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.download-modal__bar-track {
+  width: 100%;
+  height: 4px;
+  background-color: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.download-modal__bar-fill {
+  height: 100%;
+  background-color: var(--color-accent);
+  transition: width 0.2s ease;
+}
+
+.download-modal__error-msg {
+  font-size: 12px;
+  color: #ff4d4f;
+  margin-top: 4px;
+}
+
+.download-modal__info-msg {
+  font-size: 12px;
+  color: #ffc107;
+  background-color: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.25);
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-top: 4px;
+}

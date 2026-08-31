@@ -1,0 +1,39 @@
+# Node & Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Downloads & local media content (Requirements: Do not upload downloaded music/playlists)
+musica/*
+!musica/.gitkeep
+data/
+
+# Environment & local config
+.env
+.env.local
+.env.*.local
+*.log
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Temporary folders
+tmp/
+temp/

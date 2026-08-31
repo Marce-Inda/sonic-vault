@@ -1,0 +1,308 @@
+/**
+ * TrelloBoard.css — Kanban/Trello style board styles for SpotiMP4.
+ */
+
+.trello-board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  height: 100%;
+  width: 100%;
+}
+
+/* Header with View Toggle & Board Title */
+.trello-board__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.trello-board__title {
+  font-size: var(--font-size-xl, 20px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Columns container - Horizontal scroll */
+.trello-board__columns {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  padding-bottom: var(--space-4);
+  align-items: flex-start;
+  min-height: 450px;
+}
+
+/* Single Playlist Column */
+.trello-column {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--space-3, 12px);
+  width: 320px;
+  min-width: 300px;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trello-column--drag-over {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 16px rgba(230, 0, 126, 0.4);
+  background-color: rgba(230, 0, 126, 0.05);
+}
+
+/* Column Header */
+.trello-column__header {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.02);
+  border-top-left-radius: var(--space-3, 12px);
+  border-top-right-radius: var(--space-3, 12px);
+}
+
+.trello-column__title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+
+.trello-column__title {
+  font-size: var(--font-size-md, 15px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trello-column__badge {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.trello-column__actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.trello-column__btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.trello-column__btn:hover {
+  color: var(--color-text-primary);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.trello-column__btn--play:hover {
+  color: var(--color-accent);
+}
+
+/* Cards list container */
+.trello-column__cards {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+  flex: 1;
+  min-height: 120px;
+}
+
+.trello-column__empty {
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm, 13px);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--space-2);
+  margin: var(--space-2);
+}
+
+/* Track Card Component */
+.track-card {
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--space-2, 8px);
+  padding: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: grab;
+  position: relative;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+
+.track-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(230, 0, 126, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.track-card:active {
+  cursor: grabbing;
+}
+
+.track-card--playing {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 12px rgba(230, 0, 126, 0.3);
+  background: linear-gradient(135deg, var(--color-bg-base) 0%, rgba(230, 0, 126, 0.1) 100%);
+}
+
+.track-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background-color: var(--color-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border);
+  position: relative;
+}
+
+.track-card--playing .track-card__icon {
+  background-color: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+.track-card__details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track-card__title {
+  font-size: var(--font-size-sm, 13px);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-card--playing .track-card__title {
+  color: var(--color-accent);
+}
+
+.track-card__artist {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.track-card__duration {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+/* Card Actions Menu */
+.track-card__menu-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.track-card__menu-btn:hover {
+  color: var(--color-text-primary);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.track-card__dropdown {
+  position: absolute;
+  top: 100%;
+  right: var(--space-2);
+  z-index: 50;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--space-2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  min-width: 180px;
+  padding: 4px 0;
+}
+
+.track-card__dropdown-header {
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.track-card__dropdown-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.track-card__dropdown-item:hover {
+  background-color: rgba(230, 0, 126, 0.2);
+  color: white;
+}
+
+.track-card__dropdown-item--danger {
+  color: #ff4d4f;
+}
+
+.track-card__dropdown-item--danger:hover {
+  background-color: rgba(255, 77, 79, 0.2);
+  color: #ff4d4f;
+}
+
+.track-card__dropdown-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 4px 0;
+}

@@ -1,0 +1,197 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.sidebar__brand-icon {
+  font-size: 22px;
+  color: var(--color-accent);
+}
+
+.sidebar__brand-title {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #e50914, #ff4d4f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.sidebar__header {
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-2);
+}
+
+.sidebar__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+}
+
+.sidebar__add-btn {
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 2px var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sidebar__add-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.sidebar__create-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background-color: var(--color-bg-elevated);
+  border-radius: var(--radius-md);
+}
+
+.sidebar__create-input {
+  width: 100%;
+  padding: var(--space-2);
+  background-color: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.sidebar__create-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.sidebar__create-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.sidebar__create-btn {
+  flex: 1;
+  padding: 4px;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.sidebar__cancel-btn {
+  flex: 1;
+  padding: 4px;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.sidebar__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sidebar__item {
+  width: 100%;
+}
+
+.sidebar__item-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.sidebar__button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar__button:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.sidebar__button--active {
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.sidebar__button--active:hover {
+  background-color: var(--color-accent-soft);
+}
+
+.sidebar__name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.sidebar__count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.sidebar__button--active .sidebar__count {
+  color: var(--color-accent-hover);
+}
+
+.sidebar__delete-btn {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.sidebar__item-row:hover .sidebar__delete-btn {
+  opacity: 1;
+}
+
+.sidebar__delete-btn:hover {
+  color: var(--color-accent);
+  background-color: var(--color-bg-hover);
+}

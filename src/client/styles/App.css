@@ -1,0 +1,178 @@
+/**
+ * App.css — Global reset and three-section layout for SpotiMP4.
+ *
+ * Layout (Requirement 5.2):
+ *   - Sidebar    -> left
+ *   - MainView   -> center
+ *   - PlayerBar  -> bottom, fixed full-width
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+/* ---- Root layout grid ---- */
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: 1fr var(--player-height);
+  grid-template-areas:
+    'sidebar main'
+    'player player';
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--color-bg-base);
+}
+
+/* ---- Sidebar (left) ---- */
+.app__sidebar {
+  grid-area: sidebar;
+  background-color: var(--color-bg-surface);
+  border-right: 1px solid var(--color-border);
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+/* ---- Main view (center) ---- */
+.app__main {
+  grid-area: main;
+  background-color: var(--color-bg-base);
+  padding: var(--space-6);
+  overflow-y: auto;
+}
+
+/* ---- Player bar (bottom, fixed) ---- */
+.app__player {
+  grid-area: player;
+  background-color: var(--color-bg-player);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+}
+
+/* ---- Status / error / empty-state messages (main view) ---- */
+.app__status,
+.app__error,
+.app__no-results {
+  padding: var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.app__error {
+  color: var(--color-accent);
+}
+
+/* ---- Transient track-error notification (Req 2.7) ---- */
+.app__notification {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--player-height) + var(--space-4));
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 90vw;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--space-2);
+  color: var(--color-text-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.app__notification-message {
+  font-size: var(--font-size-base);
+}
+
+.app__notification-close {
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg, 18px);
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 var(--space-1);
+}
+
+.app__notification-close:hover {
+  color: var(--color-accent);
+}
+
+/* ---- Toolbar & View Toggle ---- */
+.app__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.app__view-toggle {
+  display: flex;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--space-2, 8px);
+  padding: 3px;
+  gap: 4px;
+}
+
+.app__view-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm, 13px);
+  font-weight: 600;
+  border-radius: var(--space-1, 4px);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.app__view-btn:hover {
+  color: var(--color-text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.app__view-btn--active {
+  background-color: var(--color-accent);
+  color: white;
+  box-shadow: 0 2px 8px rgba(230, 0, 126, 0.4);
+}
+
+.app__view-btn--active:hover {
+  background-color: var(--color-accent);
+  color: white;
+}
+
