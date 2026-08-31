@@ -79,8 +79,18 @@ function PlayerBar({
 
   return (
     <div className="player-bar">
-      {/* Left — current track info (title + artist), or empty (Req 5.6, 6.3). */}
+      {/* Left — current track info (title + artist) + AI Orchestrator button */}
       <div className="player-bar__info">
+        {onOpenAgentChat && (
+          <button
+            type="button"
+            className="player-bar__agent-btn"
+            onClick={onOpenAgentChat}
+            title="Abrir Orquestador de IA (Crear Playlists y Recomendaciones)"
+          >
+            🤖 Asistente IA DJ
+          </button>
+        )}
         {currentTrack !== null && (
           <>
             <span className="player-bar__title" title={currentTrack.title}>

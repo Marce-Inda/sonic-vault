@@ -23,11 +23,33 @@
 /* ---- Left: track info ---- */
 .player-bar__info {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--space-1);
+  align-items: center;
+  gap: var(--space-3);
   min-width: 0;
   overflow: hidden;
+}
+
+.player-bar__agent-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: linear-gradient(90deg, #ff2a85 0%, #a800ff 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(255, 42, 133, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.player-bar__agent-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.6);
 }
 
 .player-bar__title {
